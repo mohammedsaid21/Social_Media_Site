@@ -15,6 +15,8 @@ import { useDispatch } from "react-redux";
 import { setLogin } from "state";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
+import ServiceHelperUtil from "services/ServiceHelperUtil";
+
 
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
@@ -47,6 +49,8 @@ const initialValuesLogin = {
 };
 
 const Form = () => {
+  const PROJECT_BASE_REST_API_URL = ServiceHelperUtil.getBaseURL();
+
   const [pageType, setPageType] = useState("login");
   const { palette } = useTheme();
   const dispatch = useDispatch();
@@ -56,6 +60,7 @@ const Form = () => {
   const isRegister = pageType === "register";
 
   const register = async (values, onSubmitProps) => {
+
     // this allows us to send form info with image
     const formData = new FormData();
     for (let value in values) {
@@ -63,38 +68,46 @@ const Form = () => {
     }
     formData.append("picturePath", values.picture.name);
 
-    const savedUserResponse = await fetch(
-      "http://localhost:3001/auth/register",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-    const savedUser = await savedUserResponse.json();
-    onSubmitProps.resetForm();
+    try {
+      const savedUserResponse = await fetch(
+        `${PROJECT_BASE_REST_API_URL}/auth/register`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const savedUser = await savedUserResponse.json();
+      onSubmitProps.resetForm();
 
-    if (savedUser) {
-      setPageType("login");
+      if (savedUser) {
+        setPageType("login");
+      }
+    } catch (e) {
+      console.log("Server Problem ", e)
     }
   };
 
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
-    const loggedIn = await loggedInResponse.json();
-    onSubmitProps.resetForm();
-    if (loggedIn) {
-      dispatch(
-        setLogin({
-          user: loggedIn.user,
-          token: loggedIn.token,
-        })
-      );
-      navigate("/home");
-    }
+    try {
+      const loggedInResponse = await fetch(`${PROJECT_BASE_REST_API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+      const loggedIn = await loggedInResponse.json();
+      onSubmitProps.resetForm();
+      if (loggedIn) {
+        dispatch(
+          setLogin({
+            user: loggedIn.user,
+            token: loggedIn.token,
+          })
+        );
+        navigate("/home");
+      }
+    } catch (e) {
+      console.log("Server Problem ", e)
+    } 
   };
 
   const handleFormSubmit = async (values, onSubmitProps) => {

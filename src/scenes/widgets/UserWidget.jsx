@@ -11,8 +11,11 @@ import WidgetWrapper from "components/WidgetWrapper";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ServiceHelperUtil from "services/ServiceHelperUtil";
 
 const UserWidget = ({ userId, picturePath }) => {
+  const PROJECT_BASE_REST_API_URL = ServiceHelperUtil.getBaseURL();
+
   const [user, setUser] = useState(null);
   const { palette } = useTheme();
   const navigate = useNavigate();
@@ -22,12 +25,16 @@ const UserWidget = ({ userId, picturePath }) => {
   const main = palette.neutral.main;
 
   const getUser = async () => {
-    const response = await fetch(`http://localhost:3001/users/${userId}`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await response.json();
-    setUser(data);
+    try {
+      const response = await fetch(`${PROJECT_BASE_REST_API_URL}/users/${userId}`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      setUser(data);
+    } catch (e) {
+      console.log("Server Problem ", e)
+    }
   };
 
   useEffect(() => {

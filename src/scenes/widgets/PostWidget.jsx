@@ -10,6 +10,7 @@ import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import ServiceHelperUtil from "services/ServiceHelperUtil";
 import { setPost } from "state";
 
 const PostWidget = ({
@@ -24,6 +25,9 @@ const PostWidget = ({
   comments,
   createdAt
 }) => {
+
+  const PROJECT_BASE_REST_API_URL = ServiceHelperUtil.getBaseURL();
+
   const [isComments, setIsComments] = useState(false);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
@@ -39,16 +43,20 @@ const PostWidget = ({
   const displayDate = dateObject.toLocaleString();
 
   const patchLike = async () => {
-    const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId: loggedInUserId }),
-    });
-    const updatedPost = await response.json();
-    dispatch(setPost({ post: updatedPost }));
+    try {
+      const response = await fetch(`${PROJECT_BASE_REST_API_URL}/posts/${postId}/like`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: loggedInUserId }),
+      });
+      const updatedPost = await response.json();
+      dispatch(setPost({ post: updatedPost }));
+    } catch (e) {
+      console.log("Server Problem ", e)
+    }
   };
 
   return (
@@ -68,7 +76,7 @@ const PostWidget = ({
           height="auto"
           alt="post"
           style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
-          src={`http://localhost:3001/assets/${picturePath}`}
+          src={`${PROJECT_BASE_REST_API_URL}/assets/${picturePath}`}
         />
       )}
       <FlexBetween mt="0.25rem">

@@ -22,8 +22,9 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
   const isFriend = friends.find((friend) => friend._id === friendId);
 
   const patchFriend = async () => {
+    // socialmedia_node
     const response = await fetch(
-      `http://localhost:3001/users/${_id}/${friendId}`,
+      `www.momentsconnect.com/users/${_id}/${friendId}`,
       {
         method: "PATCH",
         headers: {

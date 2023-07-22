@@ -8,20 +8,27 @@ import MyPostWidget from "scenes/widgets/MyPostWidget";
 import PostsWidget from "scenes/widgets/PostsWidget";
 import UserWidget from "scenes/widgets/UserWidget";
 import { motion } from 'framer-motion'
+import ServiceHelperUtil from "services/ServiceHelperUtil";
 
 const ProfilePage = () => {
+  const PROJECT_BASE_REST_API_URL = ServiceHelperUtil.getBaseURL();
+
   const [user, setUser] = useState(null);
   const { userId } = useParams();
   const token = useSelector((state) => state.token);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
   const getUser = async () => {
-    const response = await fetch(`http://localhost:3001/users/${userId}`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await response.json();
-    setUser(data);
+    try {
+      const response = await fetch(`${PROJECT_BASE_REST_API_URL}/users/${userId}`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      setUser(data);
+    } catch (e) {
+      console.log("Server Problem ", e)
+    }
   };
 
   useEffect(() => {
