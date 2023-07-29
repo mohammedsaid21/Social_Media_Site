@@ -1,4 +1,4 @@
-import { PersonAddOutlined, PersonRemoveOutlined } from "@mui/icons-material";
+import { PersonAddOutlined, PersonRemoveOutlined, ShareOutlined } from "@mui/icons-material";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -37,12 +37,6 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
     dispatch(setFriends({ friends: data }));
   };
 
-
-  // const sameAccount = friends.find((friend) => friend._id === _id);
-  // console.log("🚀 ~d ~ sameAccount:", sameAccount)
-
-  // console.log("_id, friendId", _id, friendId)
-
   return (
     <FlexBetween>
       <FlexBetween gap="1rem">
@@ -71,20 +65,27 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
           </Typography>
         </Box>
       </FlexBetween>
-      {friendId !== _id
-        ?
-        <IconButton
-          onClick={() => patchFriend()}
-          sx={{ backgroundColor: primaryLight, p: "0.6rem", }}
-        >
-          {isFriend ? (
-            <PersonRemoveOutlined sx={{ color: primaryDark }} />
-          ) : (
-            <PersonAddOutlined sx={{ color: primaryDark }} />
-          )}
+
+
+      <Box>
+        <IconButton>
+          <ShareOutlined />
         </IconButton>
-        : ""
-      }
+        {friendId !== _id ?
+          <IconButton
+            onClick={() => patchFriend()}
+            sx={{ backgroundColor: primaryLight, p: "0.6rem", }}
+          >
+            {isFriend ? (
+              <PersonRemoveOutlined sx={{ color: primaryDark }} />
+            ) : (
+              <PersonAddOutlined sx={{ color: primaryDark }} />
+            )}
+          </IconButton>
+          : ""
+        }
+      </Box>
+
     </FlexBetween>
   );
 };

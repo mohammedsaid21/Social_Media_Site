@@ -105,9 +105,9 @@ const PostWidget = ({
             {displayDate}
           </Typography>
 
-          <IconButton>
+          {/* <IconButton>
             <ShareOutlined />
-          </IconButton>
+          </IconButton> */}
         </FlexBetween>
       </FlexBetween>
       {isComments && (
