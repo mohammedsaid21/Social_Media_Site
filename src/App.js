@@ -12,9 +12,7 @@ import Routers from "components/Routers";
 function App() {
   const mode = useSelector((state) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-  const posts = useSelector((state) => state.posts);
-  const token = useSelector((state) => state.token);
-  console.log(token)
+
   return (
     <div className="app">
       <BrowserRouter>
